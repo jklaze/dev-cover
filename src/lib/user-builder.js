@@ -241,9 +241,9 @@ const getDevcoverUser = async (username, baseUser = {}, userBioArray = [], isPre
     ? get(userData, 'hasGithub', false)
     : !isEmpty(get(user, 'github.login'));
   user.hasRepos = size(user.repos) > 0;
-  user.hasHashnode = isPreview
+  user.hasHashnode = false;/* isPreview
     ? get(userData, 'hasHashnode', false)
-    : !isEmpty(get(user, 'hashnode.name'));
+    : !isEmpty(get(user, 'hashnode.name')); */
   user.hasDevto = isPreview
     ? get(userData, 'hasDevto', false)
     : !isEmpty(get(user, 'devto.username'));
@@ -321,7 +321,7 @@ const fullfillUser = async ({ username, github = {}, hashnode = {}, devto = {} }
 };
 
 const buildUser = async (params) => {
-  const apolloClient = initializeApollo();
+  // const apolloClient = initializeApollo();
   let user = {};
   const { username, isPreview = false } = params;
 
@@ -334,19 +334,19 @@ const buildUser = async (params) => {
   const githubUserRes = await githubUserResponse.json();
   const devtoUserResponse = await fetch(`${DEVTO_USER_URL}${username}`);
   const devtoUserRes = await devtoUserResponse.json();
-  const { data: hnUserData } = await apolloClient.query({
-    query: GET_USER_BY_USERNAME,
-    variables: {
-      username,
-    },
-  });
+  // const { data: hnUserData } = await apolloClient.query({
+  //   query: GET_USER_BY_USERNAME,
+  //   variables: {
+  //     username,
+  //   },
+  // });
   const githubUser = cleanAttrs(githubUserRes);
-  const hashnodeUser = cleanAttrs(hnUserData.user);
+  // const hashnodeUser = cleanAttrs(hnUserData.user);
   const devtoUser = cleanAttrs(devtoUserRes);
   user = await fullfillUser({
     username,
     github: githubUser,
-    hashnode: hashnodeUser,
+    hashnode: devtoUser,//hashnodeUser,
     devto: devtoUser,
   });
   return user;
